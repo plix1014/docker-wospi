@@ -1,0 +1,21 @@
+---
+
+version: "3"
+
+services:
+  wospi:
+    container_name: wospi
+    image: wospi:${TAG}
+    volumes:
+      - ./csv_data:$HOMEDIR/csv_data:rw
+      - ./data/config.py:$HOMEDIR/wetter/config.py:r
+      - ./data/config.py:$HOMEDIR/tools/config.py:r
+      - ./data/.netrc:$HOMEDIR/.netrc:r
+      - ./data/tmp:/var/tmp:rw
+    devices:
+      - /dev/ttyAMA0:/dev/ttyAMA0
+    environment:
+      TAG: "${TAG}"
+      HOMEDIR: ${HOMEDIR}
+
+#
