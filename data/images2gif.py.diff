@@ -1,0 +1,24 @@
+diff -uNr old/usr/local/lib/python2.7/dist-packages/images2gif/images2gif.py new/usr/local/lib/python2.7/dist-packages/images2gif/images2gif.py
+--- old/usr/local/lib/python2.7/dist-packages/images2gif/images2gif.py	2023-10-19 10:50:44.000000000 +0200
++++ new/usr/local/lib/python2.7/dist-packages/images2gif/images2gif.py	2023-10-20 06:10:25.266840012 +0200
+@@ -337,8 +337,8 @@
+             Y = np.argwhere(diff.sum(1))
+             # Get rect coordinates
+             if X.size and Y.size:
+-                x0, x1 = X[0], X[-1]+1
+-                y0, y1 = Y[0], Y[-1]+1
++                x0, x1 = int(X[0]), int(X[-1]+1)
++                y0, y1 = int(Y[0]), int(Y[-1]+1)
+             else: # No change ... make it minimal
+                 x0, x1 = 0, 2
+                 y0, y1 = 0, 2
+@@ -423,7 +423,8 @@
+         # Obtain palette for all images and count each occurance
+         palettes, occur = [], []
+         for im in images:
+-            palettes.append( getheader(im)[1] )
++            #palettes.append( getheader(im)[1] )
++            palettes.append( im.palette.getdata()[1])   # <---- For Pillow
+         for palette in palettes:
+             occur.append( palettes.count( palette ) )
+         

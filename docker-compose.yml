@@ -5,8 +5,11 @@ version: "3"
 services:
   wospi:
     container_name: wospi
+    hostname: wospi
     image: wospi:${TAG}
     volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
       - ./csv_data:$HOMEDIR/csv_data:rw
       - ./data/config.py:$HOMEDIR/wetter/config.py:r
       - ./data/config.py:$HOMEDIR/tools/config.py:r
@@ -14,8 +17,10 @@ services:
       - ./data/tmp:/var/tmp:rw
     devices:
       - /dev/ttyAMA0:/dev/ttyAMA0
+      - /dev/vcio:/dev/vcio
     environment:
       TAG: "${TAG}"
       HOMEDIR: ${HOMEDIR}
+      MQTT_TOPIC_BASE: "athome/eg/wospi2"
 
 #
