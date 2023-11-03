@@ -24,11 +24,8 @@ RUNSCR=/home/$RUNUSER/wetter/$PROG
 DATE=$(date +'%Y-%m-%d %H:%M:%S')
 
 
-PLOTDIR1=/var/tmp/temp_plot
 PLOTDIR2=/var/tmp/wospi
 
-
-LOG=/root/wospi.stdout.log
 EL=0
 
 logdirs="wospi
@@ -44,10 +41,6 @@ do_start() {
 	if [ -n "$PID" ]; then
 	    echo "$DATE do_start $PROG is already running ($PID)."
 	else
-	    if [ ! -d "$PLOTDIR1" ]; then
-		mkdir $PLOTDIR1
-		chown wospi:wospi $PLOTDIR1
-	    fi
 	    if [ ! -d "$PLOTDIR2" ]; then
 		mkdir $PLOTDIR2
 		chown wospi:wospi $PLOTDIR2
@@ -55,8 +48,7 @@ do_start() {
 	    for i in $logdirs; do
 	        if [ ! -d "/var/log/$i" ]; then
 		    mkdir -p /var/log/$i
-		    #chown wospi:peter /var/log/$i
-		    chmod 777 /var/log/$i
+		    chmod 1777 /var/log/$i
 	        fi
 	    done
 	    chmod 777 /var/log
@@ -93,7 +85,6 @@ do_kill() {
 	#screen -S "wxscreen" -X quit
 	kill $PID
 	ES=$?
-	su - $RUNUSER -c /home/$RUNUSER/tools/shutdown_backup.sh
 	[ "$VERBOSE" != no ] && log_end_msg $ES
     else
 	echo "$DATE do_kill $PROG is already stopped."
@@ -106,6 +97,7 @@ do_kill() {
 if [ "$(/usr/bin/whoami)" != "root" ]; then
     echo "ERROR: run this script as 'root'"
     EL=2
+    exit $EL
 fi
 
 status=0
@@ -113,7 +105,7 @@ status=0
 case "$1" in
     start)
         log_daemon_msg "Starting $DESC" "$NAME"
-	do_start >> $LOG 2>&1
+	do_start
 	status=$?
         log_end_msg $status
         ;;
@@ -122,7 +114,7 @@ case "$1" in
         EL=3
         ;;
     stop)
-	do_kill >> $LOG 2>&1
+	do_kill
         ;;
     status)
 	do_check
@@ -134,6 +126,4 @@ case "$1" in
 esac
 
 exit $EL
-
-
 

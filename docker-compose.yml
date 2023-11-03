@@ -4,23 +4,27 @@ version: "3"
 
 services:
   wospi:
-    container_name: wospi
-    hostname: wospi
-    image: wospi:${TAG}
+    container_name: ${container_name}
+    hostname: ${hostname}
+    image: ${image}
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - ./csv_data:$HOMEDIR/csv_data:rw
-      - ./data/config.py:$HOMEDIR/wetter/config.py:r
-      - ./data/config.py:$HOMEDIR/tools/config.py:r
-      - ./data/.netrc:$HOMEDIR/.netrc:r
-      - ./data/tmp:/var/tmp:rw
+      - ${CSV_DATA}:$HOMEDIR/csv_data:rw
+      - ${WOSPI_CONFIG}:$HOMEDIR/wetter/config.py:r
+      - ${WOSPI_CONFIG}:$HOMEDIR/tools/config.py:r
+      - ${BACKUP_DIR}:$HOMEDIR/backup:rw
+      - ${NETRC_CONFIG}:$HOMEDIR/.netrc:r
+      - ${HOME}/.ssh:$HOMEDIR/.ssh:r
+      - ${TEMP_DIR}:/var/tmp:rw
     devices:
       - /dev/ttyAMA0:/dev/ttyAMA0
       - /dev/vcio:/dev/vcio
     environment:
       TAG: "${TAG}"
       HOMEDIR: ${HOMEDIR}
-      MQTT_TOPIC_BASE: "athome/eg/wospi2"
-
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_TOPIC_BASE: ${MQTT_TOPIC_BASE}
+      TARGET: ${TARGET}
+    restart: always
 #

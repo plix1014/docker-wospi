@@ -7,59 +7,92 @@ set -o pipefail
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export PATH
 
-HOMEDIR=${HOMEDIR:-/home/wospi}
+RUNUSER=wospi
+HOMEDIR=${HOMEDIR:-/home/$RUNUSER}
+
+PROG=wospi.pyc
+RUNSCR=$HOMEDIR/wetter/$PROG
+
+#------------------------
+#
+logMSG() {
+    #DT=$(date +'%Y-%m-%e %H:%M:%S')
+    DT=$(date +'%a %b %e %T %Y')
+    echo "$DT $1: $2"
+}
 
 run_cron() {
-    echo "#1 start cron daemon"
+    logMSG INFO "#1 start cron daemon"
     sudo /usr/sbin/service cron start
 }
 
 run_mqtt() {
-    echo "#2 start wospi mqtt service"
-    sudo /usr/bin/python $HOMEDIR/tools/wospi2mqtt2.py > /dev/null 2>&1 &
-    sleep 1
+    if [ "$TARGET" != "image-vanilla" ]; then
+	logMSG INFO "#2 start mqtt service"
+	/usr/bin/python $HOMEDIR/tools/wospi2mqtt2.py &
+	sleep 1
+    fi
 }
 
 run_wospi() {
-    echo "#3 start wospi"
+    logMSG INFO "#3 start wospi"
 
     PATH=$PATH:$HOMEDIR/wetter:$HOMEDIR/tools
+    cd $HOMEDIR
 
-    sudo /etc/init.d/wospi start
+    #sudo /etc/init.d/wospi start
+    /usr/bin/python $RUNSCR 
     el=$?
 
     if [ $el -ne 0 ]; then
-	echo "ERROR: failed to start wospi"
+	logMSG ERROR "failed to start wospi"
 	exit 1
     else
 	PID=$(ps -ef|grep wospi.py[c] | awk '{print $2}')
-	echo "INFO: wospi is running with PID $PID"
+	logMSG INFO "wospi is running with PID $PID"
 	ps -ef|grep pytho[n]
     fi
+}
+
+run_loop() {
+    while :; do
+	logMSG INFO "Press [CTRL+C] to stop.."
+	sleep 1
+    done
 }
 
 
 #------------------------
 #
-echo "INFO: $0 called with: '${@}'"
 
 case "$1" in
+	cron)
+	    run_cron
+	    ;;
+	mqtt)
+	    run_mqtt
+	    ;;
+	wtest)
+	    run_wospi
+	    ;;
 	wospi)
-	    echo "INFO: $0 started with command '$1'"
 	    run_cron
 	    run_mqtt
 	    run_wospi
 	    ;;
 	bash)
-	    echo "INFO: $0 started with command '$1'"
 	    exec "$@"
 	    ;;
-	mqtt)
-	    echo "INFO: $0 started with command '$1'"
-	    run_mqtt
+	loop)
+	    run_loop
 	    ;;
 	*)
-	    echo "WARN: $0 no parameter given."
+	    if [ -$# -eq 0]; then
+		logMSG WARN "${0##*/} no parameter given."
+	    else
+		logMSG INFO "${0##*/} called with unknown parameter: '${@}'"
+	    fi
+	    logMSG INFO "usage: ${0##*/} { cron|mqtt|wospi|bash|loop|wtest }"
 	    exit 1
 	    ;;
 esac

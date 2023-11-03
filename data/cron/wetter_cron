@@ -5,43 +5,33 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 MAILTO=""
 #
 # other wospi jobs
-00 03   * * *   wospi  cd ~/wetter && python plotAnnualWind.py        > /var/log/wospi/plotAnnualWind.log 2>&1
+00 03   * * *   wospi  cd ~/wetter && python plotAnnualWind.py        >  /var/log/wospi/plotAnnualWind.log 2>&1
 #
 # helper jobs
-05 06   * * *   wospi  cd ~/tools  && ./store_sunrise_set_times.sh    > /var/log/wospi/store_suntimes.log 2>&1
-10 06   * * *   wospi  cd ~/tools  && python saveUptime.py            > /var/log/wospi/saveUptime.log 2>&1
-3-59/10 * * * * wospi  cd ~/tools  && sudo python saveInternValues.py > /var/log/wospi/saveInternValues.log 2>&1
+05 06   * * *   wospi  cd ~/tools  && ./store_sunrise_set_times.sh    >  /var/log/wospi/store_suntimes.log 2>&1
+10 06   * * *   wospi  cd ~/tools  && python saveUptime.py            >  /var/log/wospi/saveUptime.log 2>&1
+3-59/10 * * * * wospi  cd ~/tools  && sudo python saveInternValues.py >  /var/log/wospi/saveInternValues.log 2>&1
 #
 # additional statistics jobs
-08 06   * * *   wospi  cd ~/wetter && python plotSun.py               > /var/log/wospi/plotSun.log 2>&1
-15 06   * * *   wospi  cd ~/wetter && python plotSoCTemp.py           > /var/log/wospi/plotSoCTemp.log 2>&1
-18 06   * * *   wospi  cd ~/wetter && python plotUptime.py            > /var/log/wospi/plotUptime.log 2>&1
+08 06   * * *   wospi  cd ~/wetter && python plotSun.py               >  /var/log/wospi/plotSun.log 2>&1
+15 06   * * *   wospi  cd ~/wetter && python plotSoCTemp.py           >  /var/log/wospi/plotSoCTemp.log 2>&1
+18 06   * * *   wospi  cd ~/wetter && python plotUptime.py            >  /var/log/wospi/plotUptime.log 2>&1
 #
 # plot and transfer on Jan 1st.
 15 00   1 1 *   wospi  cd ~/wetter && python plotStatistics.py -l 1 -i y  >> /var/log/wospi/plotStatistics.log 2>&1
-25 00   1 1 *   wospi  cd ~/wetter && python plotUV.py -l 1               >> /var/log/wospi/plotUV.log 2>&1
+25 00   1 1 *   wospi  cd ~/wetter && python plotUV.py -l 1           >> /var/log/wospi/plotUV.log 2>&1
 35 00   1 1 *   wospi  cd ~/wetter && python plotPrevRainDays.py          >> /var/log/wospi/plotPrevRainDays.log 2>&1
 # plot and transfer during the year
 25 06   * * *   wospi  cd ~/wetter && python plotStatistics.py -c -f -i y >> /var/log/wospi/plotStatistics.log 2>&1
-45 06   * * *   wospi  cd ~/wetter && python plotUV.py -c -f              >> /var/log/wospi/plotUV.log 2>&1
+45 06   * * *   wospi  cd ~/wetter && python plotUV.py -c -f          >> /var/log/wospi/plotUV.log 2>&1
 #
 # upload WindRose image
-4 3,9,15,21 * * * wospi cd ~/tools && python plotWind.py              > /var/log/wospi/plotWind.log 2>&1
+4 3,9,15,21 * * * wospi  cd ~/tools  && python plotWind.py              >  /var/log/wospi/plotWind.log 2>&1
 # upload satellite image
-#06 05   * * *   wospi  cd ~/tools  && python satimage.py              > /var/log/wospi/satimage.log 2>&1
-06 06   * * *   wospi  cd ~/tools  && python satimage.py              > /var/log/wospi/satimage.log 2>&1
+30 05   * * *   wospi  cd ~/tools  && python satimage.py              >  /var/log/wospi/satimage.log 2>&1
 #
 # upload data to homepage
-#2-59/10 * * * * wospi  cd ~/tools  && ./ftp_upload_all.sh             >> /var/log/wospi/ftp_upload.log 2>&1
-2-59/10 * * * * wospi  cd ~/tools  && ./ftp_upload_all.sh             > /var/log/wospi/ftp_upload.log 2>&1
+2-59/10 * * * * wospi  cd ~/tools  && ./ftp_upload_all.sh             >> /var/log/wospi/ftp_upload.log 2>&1
 #
-# upload csv
-#9 6,12 * * *    wospi  cd ~/tools  && ./ftp_upload_csv.sh             > /var/log/wospi/ftp_upload_csv.log 2>&1
-#
-# send MQTT message
-#*/2 05-22 * * * wospi  cd ~/tools  && ./wospi2mqtt.py                 > /var/log/wospi/wospi2mqtt.log 2>&1
-#
-# download logfile
-#3 6 * * *   wospi  cd ~/tools  && ./ftp_download_logs.sh > /var/log/wospi/ftp_download_logs.log 2>&1
-#
+58 23   * * *   wospi  cd ~/tools  && ./minmaxBackup.sh               >  /var/log/wospi/Backup_minmax.log 2>&1
 #
