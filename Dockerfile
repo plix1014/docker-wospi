@@ -5,12 +5,14 @@ WORKDIR /addon
 RUN git clone https://github.com/plix1014/wospi-addon.git
 RUN git clone https://github.com/plix1014/serialize_crontab.git
 RUN git clone https://github.com/plix1014/vim-tools.git
+WORKDIR /addon/wospi-addon
+RUN git pull
 
 #------------------------------------------------------------------------------------------
 # build image
 FROM debian:buster-slim as base
 
-ARG CONT_VER WOSPI_VERSION WOSPI_RELEASE_DATE 
+ARG CONT_VER WOSPI_VERSION WOSPI_RELEASE_DATE
 ARG TESTENV=0
 ARG UIDGID=6003
 
