@@ -34,6 +34,13 @@ run_mqtt() {
     fi
 }
 
+env2file() {
+    logMSG INFO "#3 save environment variables to .env"
+    if [ ! -f "/tmp/.env" ]; then
+	env|egrep "HOMEPATH|BACKUPPATH|CSVPATH|TMPPATH|WLOGPATH|WOSPI_CONFIG|BACKUP_DIR|MQTT_" > /tmp/.env
+    fi
+}
+
 run_wospi() {
     logMSG INFO "#3 start wospi"
 
@@ -76,6 +83,7 @@ case "$1" in
 	    run_wospi
 	    ;;
 	wospi)
+	    env2file
 	    run_cron
 	    run_mqtt
 	    run_wospi

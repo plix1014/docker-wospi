@@ -4,6 +4,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #
 MAILTO=""
 #
+HOMEPATH=/home/wospi/wetter
+#
 # other wospi jobs
 00 03   * * *   wospi  cd ~/wetter && python plotAnnualWind.py        >  /var/log/wospi/plotAnnualWind.log 2>&1
 #

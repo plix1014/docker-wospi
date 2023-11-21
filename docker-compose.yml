@@ -12,7 +12,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${CSV_DATA}:$HOMEDIR/csv_data:rw
       - ${WOSPI_CONFIG}:$HOMEDIR/wetter/config.py:r
-      - ${WOSPI_CONFIG}:$HOMEDIR/tools/config.py:r
       - ${BACKUP_DIR}:$HOMEDIR/backup:rw
       - ${NETRC_CONFIG}:$HOMEDIR/.netrc:r
       - ${HOME}/.ssh:$HOMEDIR/.ssh:r
