@@ -46,10 +46,11 @@ LABEL com.wospi.container.maintainer="plix1014@gmail.com"
 
 # os config
 RUN apt update && \
-  apt install -y curl unzip gnupg lsb-release ca-certificates net-tools coreutils locales cron bc zip mutt lftp gnuplot gsfonts vim sudo python-serial python-dateutil procps gcal sqlite3 iputils-ping ftp telnet python-pandas python-numpy python-ephem python-pip python-paho-mqtt python-pyinotify && \
-  pip install images2gif windrose Adafruit_Python_DHT && \
-  sed -i 's,^# en_US,en_US,g' /etc/locale.gen && \
+  apt-get install -y --no-install-recommends curl unzip gnupg lsb-release ca-certificates net-tools coreutils locales cron bc zip mutt lftp gnuplot gsfonts vim sudo python-serial python-dateutil procps gcal sqlite3 iputils-ping ftp telnet python-pandas python-numpy python-ephem python-pil python-pip python-paho-mqtt python-pyinotify python-setuptools libterm-readline-perl-perl libfreetype6-dev pkg-config gcc g++ patch python-dev && \
+  pip install --no-cache-dir images2gif windrose Adafruit_Python_DHT python-dotenv && \
+  sed -i -e 's,^# en_US,en_US,g' -e 's,^# de_AT,de_AT,g' /etc/locale.gen && \
   locale-gen en_US.UTF-8 && \
+  locale-gen de_AT.UTF-8 && \
   update-locale && \
   apt-get -y clean && \
   rm -r /var/cache/apt /var/lib/apt/lists/* /var/log/*log
