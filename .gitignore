@@ -130,4 +130,11 @@ dmypy.json
 
 #
 .netrc
+.env.dev
+.env.prod
+data/config.py
+backup
+data/ent
+data/raspi.libs.*.tar.gz
+
 

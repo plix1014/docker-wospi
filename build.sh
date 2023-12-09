@@ -1,8 +1,13 @@
 #!/bin/bash
 
-. .env
 
-export CONT_VER=$TAG
+ENV=.env
+
+if [ -f "$ENV" ]; then
+    . $ENV
+else
+    . /opt/docker/wospi/$ENV
+fi
 
 if [ $# -ne 1 ]; then
     echo
@@ -17,6 +22,6 @@ if [ "$1" = "full" ]; then
     OPTS="--no-cache"
 fi
 
-echo "docker build $OPTS --target $TARGET --build-arg="CONT_VER=$CONT_VER" -t ${IMAGE_NAME}:$TAG"
-time docker build $OPTS --target $TARGET --build-arg="CONT_VER=$CONT_VER" -t ${IMAGE_NAME}:$TAG  .
+echo "docker build $OPTS --target $TARGET --build-arg="CONT_VER=$TAG" -t ${IMAGE_NAME}:$TAG"
+time docker build $OPTS --target $TARGET --build-arg="CONT_VER=$TAG" -t ${IMAGE_NAME}:$TAG  .
 
