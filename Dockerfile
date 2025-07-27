@@ -10,7 +10,7 @@ RUN git clone https://github.com/plix1014/vim-tools.git
 
 #------------------------------------------------------------------------------------------
 # build image
-FROM debian:buster-slim as base
+FROM debian:buster-slim AS base
 
 ARG CONT_VER WOSPI_VERSION WOSPI_RELEASE_DATE
 ARG TESTENV=0
@@ -47,7 +47,7 @@ LABEL com.wospi.container.maintainer="plix1014@gmail.com"
 # os config
 RUN apt update && \
   apt-get install -y --no-install-recommends curl unzip gnupg lsb-release ca-certificates net-tools coreutils locales cron bc zip mutt lftp gnuplot gsfonts vim sudo python-serial python-dateutil procps gcal sqlite3 iputils-ping ftp telnet python-pandas python-numpy python-ephem python-pil python-pip python-paho-mqtt python-pyinotify python-setuptools libterm-readline-perl-perl libfreetype6-dev pkg-config gcc g++ patch python-dev && \
-  pip install --no-cache-dir images2gif windrose Adafruit_Python_DHT python-dotenv && \
+  pip install --no-cache-dir images2gif windrose python-dotenv && \
   sed -i -e 's,^# en_US,en_US,g' -e 's,^# de_AT,de_AT,g' /etc/locale.gen && \
   locale-gen && \
   update-locale && \
@@ -59,6 +59,11 @@ WORKDIR /
 COPY data/images2gif.py.diff /tmp
 RUN patch -p1 < /tmp/images2gif.py.diff
 
+# https://raspberrypi.stackexchange.com/questions/105548/reliable-temperature-humidity-logging-with-python-and-a-dht11
+#RUN curl -S -o $USERHOME/tools/DHT.py http://abyz.me.uk/rpi/pigpio/code/DHT.py
+#RUN curl -S -o DHT.py http://abyz.me.uk/rpi/pigpio/code/DHT.py
+#COPY DHT.py $USERHOME/tools
+
 # user setup
 RUN groupadd -g ${UIDGID} wospi && useradd -ms /bin/bash -u ${UIDGID} -g ${UIDGID} -G dialout -c "Weather Observation System for Raspberry Pi" -d $USERHOME wospi
 
@@ -68,7 +73,7 @@ RUN bash -c 'mkdir -p $CSVPATH $TMPPATH/wospi $WLOGPATH $BACKUPPATH'
 
 #------------------------------------------------------------------------------------------
 # build wospi vanilla image
-FROM base as image-vanilla
+FROM base AS image-vanilla
 
 WORKDIR $HOMEPATH
 
@@ -117,7 +122,7 @@ CMD ["wospi"]
 
 #------------------------------------------------------------------------------------------
 # build prod image
-FROM image-vanilla as image-prod
+FROM image-vanilla AS image-prod
 USER root
 
 # add vcgen binary
@@ -168,7 +173,7 @@ USER wospi
 
 #------------------------------------------------------------------------------------------
 # build dev image
-FROM image-prod as image-dev
+FROM image-prod AS image-dev
 USER root
 
 ## TODO only for dev. Remove in final image!!!!
